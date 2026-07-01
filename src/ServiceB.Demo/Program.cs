@@ -1,6 +1,6 @@
 using ConfigReader;
 
-var connectionString = "mongodb://localhost:27018";
+var connectionString = Environment.GetEnvironmentVariable("MONGO_CONNECTION_STRING") ?? "mongodb://localhost:27018";
 using var reader = new ConfigurationReader("SERVICE-B", connectionString, 5000);
 
 while (true)
