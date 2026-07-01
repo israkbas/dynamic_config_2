@@ -3,76 +3,139 @@
 <head>
 <meta charset="UTF-8">
 <title>Dynamic Config Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; }
   body {
-    font-family: Segoe UI, Arial, sans-serif;
-    background: #f2f4f7;
+    font-family: "Inter", Segoe UI, Arial, sans-serif;
+    background: #eef1f6;
     margin: 0;
-    padding: 30px 0;
-    color: #2b2b2b;
+    padding: 40px 0;
+    color: #262a35;
   }
-  .container { max-width: 900px; margin: 0 auto; padding: 0 16px; }
+  .container { max-width: 1150px; margin: 0 auto; padding: 0 24px; }
+
+  @keyframes introFadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .intro-screen {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, #3b6ef6, #7b4cf0);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+    z-index: 999;
+    transition: opacity .7s ease, visibility .7s ease;
+  }
+  .intro-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+  .intro-screen h2 {
+    font-size: 32px;
+    margin: 0;
+    opacity: 0;
+    animation: introFadeUp .8s ease-out forwards;
+  }
+  .intro-screen p {
+    font-size: 15px;
+    margin-top: 12px;
+    opacity: 0;
+    animation: introFadeUp .8s ease-out .3s forwards;
+  }
 
   .topbar {
-    background: linear-gradient(135deg, #3b6ef6, #6a4cf0);
+    background: linear-gradient(135deg, #3b6ef6, #7b4cf0);
     color: #fff;
-    padding: 24px 22px;
-    border-radius: 8px;
-    margin-bottom: 24px;
-    box-shadow: 0 4px 10px rgba(59,110,246,0.25);
+    padding: 32px 34px;
+    border-radius: 12px;
+    margin-bottom: 28px;
+    box-shadow: 0 8px 20px rgba(59,110,246,0.28);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
   }
-  .topbar h1 { margin: 0 0 4px 0; font-size: 22px; }
-  .topbar p { margin: 0; opacity: 0.85; font-size: 13px; }
+  .topbar h1 { margin: 0 0 6px 0; font-size: 26px; font-weight: 700; }
+  .topbar p { margin: 0; opacity: 0.85; font-size: 14px; }
+  .topbar .stat {
+    background: rgba(255,255,255,0.15);
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    text-align: center;
+  }
+  .topbar .stat strong { display: block; font-size: 22px; }
 
   .card {
     background: #fff;
-    border: 1px solid #e2e5ea;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 24px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    border: 1px solid #e6e9ef;
+    border-radius: 12px;
+    padding: 26px 28px;
+    margin-bottom: 26px;
+    box-shadow: 0 2px 8px rgba(30,40,80,0.05);
   }
   .card h2 {
-    font-size: 15px;
-    margin: 0 0 14px 0;
-    color: #444;
-    padding-bottom: 10px;
+    font-size: 16px;
+    margin: 0 0 18px 0;
+    color: #333;
+    padding-bottom: 12px;
     border-bottom: 2px solid #eef0f3;
+    font-weight: 600;
   }
-  form#addForm { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+  form#addForm {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    align-items: end;
+  }
+  form#addForm .field { display: flex; flex-direction: column; gap: 6px; }
+  form#addForm label { font-size: 12px; color: #666; font-weight: 600; }
+  form#addForm .checkbox-field { flex-direction: row; align-items: center; gap: 8px; }
+
   input[type=text], select {
-    padding: 7px 9px;
+    padding: 10px 12px;
     border: 1px solid #d3d7de;
-    border-radius: 5px;
+    border-radius: 7px;
     font-size: 14px;
+    font-family: inherit;
+    width: 100%;
   }
-  input[type=text]:focus, select:focus { outline: none; border-color: #3b6ef6; }
-  #filterInput { width: 100%; margin-bottom: 14px; }
+  input[type=text]:focus, select:focus { outline: none; border-color: #3b6ef6; box-shadow: 0 0 0 3px rgba(59,110,246,0.15); }
+  #filterInput { width: 100%; margin-bottom: 18px; max-width: 360px; }
 
   button {
-    padding: 7px 16px;
+    padding: 10px 20px;
     background: #3b6ef6;
     color: #fff;
     border: none;
-    border-radius: 5px;
+    border-radius: 7px;
     cursor: pointer;
     font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
     transition: background .15s, transform .15s;
   }
   button:hover { background: #2c56d1; transform: translateY(-1px); }
+  #addForm button { height: 42px; }
 
   table { border-collapse: collapse; width: 100%; }
-  th, td { padding: 10px; text-align: left; font-size: 14px; }
-  th { border-bottom: 2px solid #e2e5ea; color: #666; font-weight: 600; }
+  th, td { padding: 14px 12px; text-align: left; font-size: 14px; }
+  th { border-bottom: 2px solid #e6e9ef; color: #888; font-weight: 600; font-size: 13px; }
   tbody tr { border-bottom: 1px solid #eef0f3; transition: background .15s; }
-  tbody tr:hover { background: #f8f9fb; }
+  tbody tr:nth-child(even) { background: #fafbfd; }
+  tbody tr:hover { background: #eef2ff; }
   td input[type=text] { width: 100%; }
 
   .badge {
     display: inline-block;
-    padding: 3px 10px;
-    border-radius: 12px;
+    padding: 4px 12px;
+    border-radius: 20px;
     font-size: 12px;
     font-weight: 600;
     color: #fff;
@@ -82,41 +145,67 @@
   .badge-double { background: #059669; }
   .badge-bool { background: #d97706; }
 
-  .switch { position: relative; display: inline-block; width: 40px; height: 22px; }
+  .switch { position: relative; display: inline-block; width: 42px; height: 24px; }
   .switch input { opacity: 0; width: 0; height: 0; }
   .switch .slider {
     position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-    background-color: #ccc; transition: .2s; border-radius: 22px;
+    background-color: #ccc; transition: .2s; border-radius: 24px;
   }
   .switch .slider:before {
-    position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px;
-    background-color: #fff; transition: .2s; border-radius: 50%;
+    position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
+    background-color: #fff; transition: .2s; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
   }
   .switch input:checked + .slider { background-color: #3b6ef6; }
   .switch input:checked + .slider:before { transform: translateX(18px); }
 </style>
 </head>
 <body>
+<div class="intro-screen" id="introScreen">
+  <h2>Case'ime hoş geldiniz</h2>
+  <p>Umarım beğenirsiniz, dilerim birlikte çalışma fırsatımız olur!</p>
+</div>
+
 <div class="container">
 
 <div class="topbar">
-  <h1>Dynamic Config Admin</h1>
-  <p>Servislerin config kayıtlarını buradan yönetebilirsin</p>
+  <div>
+    <h1>Dynamic Config Admin</h1>
+    <p>Servislerin config kayıtlarını buradan yönetebilirsin</p>
+  </div>
+  <div class="stat">
+    <strong id="recordCount">0</strong>
+    kayıt
+  </div>
 </div>
 
 <div class="card">
   <h2>Yeni Config Kaydı Ekle</h2>
   <form id="addForm">
-    <input type="text" id="addName" placeholder="Name" required>
-    <select id="addType">
-      <option value="string">string</option>
-      <option value="int">int</option>
-      <option value="double">double</option>
-      <option value="bool">bool</option>
-    </select>
-    <input type="text" id="addValue" placeholder="Value" required>
-    <label><input type="checkbox" id="addIsActive" checked> Aktif</label>
-    <input type="text" id="addApplicationName" placeholder="ApplicationName" required>
+    <div class="field">
+      <label for="addName">Name</label>
+      <input type="text" id="addName" placeholder="ör. SiteName" required>
+    </div>
+    <div class="field">
+      <label for="addType">Type</label>
+      <select id="addType">
+        <option value="string">string</option>
+        <option value="int">int</option>
+        <option value="double">double</option>
+        <option value="bool">bool</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="addValue">Value</label>
+      <input type="text" id="addValue" placeholder="ör. soty.io" required>
+    </div>
+    <div class="field">
+      <label for="addApplicationName">Application Name</label>
+      <input type="text" id="addApplicationName" placeholder="ör. SERVICE-A" required>
+    </div>
+    <div class="field checkbox-field">
+      <input type="checkbox" id="addIsActive" checked>
+      <label for="addIsActive" style="margin: 0;">Aktif</label>
+    </div>
     <button type="submit">Ekle</button>
   </form>
 </div>
@@ -132,7 +221,7 @@
         <th>Type</th>
         <th>Value</th>
         <th>Aktif</th>
-        <th>ApplicationName</th>
+        <th>Application Name</th>
         <th></th>
       </tr>
     </thead>
@@ -152,6 +241,7 @@
   function renderTable(records) {
     const body = document.getElementById('configTableBody');
     body.innerHTML = '';
+    document.getElementById('recordCount').textContent = allRecords.length;
 
     for (const record of records) {
       const row = document.createElement('tr');
@@ -174,9 +264,24 @@
     }
   }
 
+  function isValidValueForType(type, value) {
+    if (value.trim() === '') return false;
+
+    if (type === 'int') return /^-?\d+$/.test(value.trim());
+    if (type === 'double') return !isNaN(parseFloat(value)) && isFinite(value);
+    if (type === 'bool') return ['1', '0', 'true', 'false'].includes(value.trim().toLowerCase());
+
+    return true;
+  }
+
   async function saveRecord(record, row) {
     const newValue = row.querySelector('.value-input').value;
     const newIsActive = row.querySelector('.active-input').checked;
+
+    if (!isValidValueForType(record.type, newValue)) {
+      alert(`Value alanı "${record.type}" tipine uygun değil.`);
+      return;
+    }
 
     await fetch(`/api/configs/${record.id}`, {
       method: 'PUT',
@@ -210,6 +315,11 @@
       applicationName: document.getElementById('addApplicationName').value
     };
 
+    if (!isValidValueForType(newRecord.type, newRecord.value)) {
+      alert(`Value alanı "${newRecord.type}" tipine uygun değil.`);
+      return;
+    }
+
     await fetch('/api/configs', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -222,6 +332,10 @@
   });
 
   loadRecords();
+
+  setTimeout(() => {
+    document.getElementById('introScreen').classList.add('hidden');
+  }, 5000);
 </script>
 
 </div>
