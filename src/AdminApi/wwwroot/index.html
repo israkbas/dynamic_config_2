@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Dynamic Config Admin</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: Segoe UI, Arial, sans-serif;
+    background: #f2f4f7;
+    margin: 0;
+    padding: 30px 0;
+    color: #2b2b2b;
+  }
+  .container { max-width: 900px; margin: 0 auto; padding: 0 16px; }
+
+  .topbar {
+    background: linear-gradient(135deg, #3b6ef6, #6a4cf0);
+    color: #fff;
+    padding: 24px 22px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 10px rgba(59,110,246,0.25);
+  }
+  .topbar h1 { margin: 0 0 4px 0; font-size: 22px; }
+  .topbar p { margin: 0; opacity: 0.85; font-size: 13px; }
+
+  .card {
+    background: #fff;
+    border: 1px solid #e2e5ea;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .card h2 {
+    font-size: 15px;
+    margin: 0 0 14px 0;
+    color: #444;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #eef0f3;
+  }
+  form#addForm { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  input[type=text], select {
+    padding: 7px 9px;
+    border: 1px solid #d3d7de;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+  input[type=text]:focus, select:focus { outline: none; border-color: #3b6ef6; }
+  #filterInput { width: 100%; margin-bottom: 14px; }
+
+  button {
+    padding: 7px 16px;
+    background: #3b6ef6;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background .15s, transform .15s;
+  }
+  button:hover { background: #2c56d1; transform: translateY(-1px); }
+
+  table { border-collapse: collapse; width: 100%; }
+  th, td { padding: 10px; text-align: left; font-size: 14px; }
+  th { border-bottom: 2px solid #e2e5ea; color: #666; font-weight: 600; }
+  tbody tr { border-bottom: 1px solid #eef0f3; transition: background .15s; }
+  tbody tr:hover { background: #f8f9fb; }
+  td input[type=text] { width: 100%; }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+  }
+  .badge-string { background: #3b6ef6; }
+  .badge-int { background: #8b5cf6; }
+  .badge-double { background: #059669; }
+  .badge-bool { background: #d97706; }
+
+  .switch { position: relative; display: inline-block; width: 40px; height: 22px; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .switch .slider {
+    position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #ccc; transition: .2s; border-radius: 22px;
+  }
+  .switch .slider:before {
+    position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px;
+    background-color: #fff; transition: .2s; border-radius: 50%;
+  }
+  .switch input:checked + .slider { background-color: #3b6ef6; }
+  .switch input:checked + .slider:before { transform: translateX(18px); }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="topbar">
+  <h1>Dynamic Config Admin</h1>
+  <p>Servislerin config kayıtlarını buradan yönetebilirsin</p>
+</div>
+
+<div class="card">
+  <h2>Yeni Config Kaydı Ekle</h2>
+  <form id="addForm">
+    <input type="text" id="addName" placeholder="Name" required>
+    <select id="addType">
+      <option value="string">string</option>
+      <option value="int">int</option>
+      <option value="double">double</option>
+      <option value="bool">bool</option>
+    </select>
+    <input type="text" id="addValue" placeholder="Value" required>
+    <label><input type="checkbox" id="addIsActive" checked> Aktif</label>
+    <input type="text" id="addApplicationName" placeholder="ApplicationName" required>
+    <button type="submit">Ekle</button>
+  </form>
+</div>
+
+<div class="card">
+  <h2>Config Kayıtları</h2>
+  <input type="text" id="filterInput" placeholder="İsme göre filtrele...">
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Value</th>
+        <th>Aktif</th>
+        <th>ApplicationName</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="configTableBody"></tbody>
+  </table>
+</div>
+
+<script>
+  let allRecords = [];
+
+  async function loadRecords() {
+    const response = await fetch('/api/configs');
+    allRecords = await response.json();
+    renderTable(allRecords);
+  }
+
+  function renderTable(records) {
+    const body = document.getElementById('configTableBody');
+    body.innerHTML = '';
+
+    for (const record of records) {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${record.name}</td>
+        <td><span class="badge badge-${record.type}">${record.type}</span></td>
+        <td><input type="text" class="value-input" value="${record.value}"></td>
+        <td>
+          <label class="switch">
+            <input type="checkbox" class="active-input" ${record.isActive ? 'checked' : ''}>
+            <span class="slider"></span>
+          </label>
+        </td>
+        <td>${record.applicationName}</td>
+        <td><button class="save-btn">Kaydet</button></td>
+      `;
+
+      row.querySelector('.save-btn').addEventListener('click', () => saveRecord(record, row));
+      body.appendChild(row);
+    }
+  }
+
+  async function saveRecord(record, row) {
+    const newValue = row.querySelector('.value-input').value;
+    const newIsActive = row.querySelector('.active-input').checked;
+
+    await fetch(`/api/configs/${record.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: record.name,
+        type: record.type,
+        value: newValue,
+        isActive: newIsActive,
+        applicationName: record.applicationName
+      })
+    });
+
+    await loadRecords();
+  }
+
+  document.getElementById('filterInput').addEventListener('input', (e) => {
+    const filterText = e.target.value.toLowerCase();
+    const filtered = allRecords.filter(r => r.name.toLowerCase().includes(filterText));
+    renderTable(filtered);
+  });
+
+  document.getElementById('addForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const newRecord = {
+      name: document.getElementById('addName').value,
+      type: document.getElementById('addType').value,
+      value: document.getElementById('addValue').value,
+      isActive: document.getElementById('addIsActive').checked,
+      applicationName: document.getElementById('addApplicationName').value
+    };
+
+    await fetch('/api/configs', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newRecord)
+    });
+
+    e.target.reset();
+    document.getElementById('addIsActive').checked = true;
+    await loadRecords();
+  });
+
+  loadRecords();
+</script>
+
+</div>
+</body>
+</html>

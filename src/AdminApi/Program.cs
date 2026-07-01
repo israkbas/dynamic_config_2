@@ -12,6 +12,9 @@ builder.Services.AddSingleton(collection);
 
 var app = builder.Build();
 
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.MapGet("/api/configs", async (IMongoCollection<ConfigRecord> collection) =>
 {
     var records = await collection.Find(FilterDefinition<ConfigRecord>.Empty).ToListAsync();
