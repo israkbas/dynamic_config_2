@@ -7,6 +7,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1DD1144A-708
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigReader", "src\ConfigReader\ConfigReader.csproj", "{F5952833-AF85-4828-912D-FDB4335D1B46}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceA.Demo", "src\ServiceA.Demo\ServiceA.Demo.csproj", "{02359664-938F-41E8-B275-BBF365CBBC02}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceB.Demo", "src\ServiceB.Demo\ServiceB.Demo.csproj", "{0A9D8FFE-6326-472D-853B-5F96040EC911}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,8 +24,18 @@ Global
 		{F5952833-AF85-4828-912D-FDB4335D1B46}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5952833-AF85-4828-912D-FDB4335D1B46}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F5952833-AF85-4828-912D-FDB4335D1B46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02359664-938F-41E8-B275-BBF365CBBC02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02359664-938F-41E8-B275-BBF365CBBC02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02359664-938F-41E8-B275-BBF365CBBC02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02359664-938F-41E8-B275-BBF365CBBC02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A9D8FFE-6326-472D-853B-5F96040EC911}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A9D8FFE-6326-472D-853B-5F96040EC911}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A9D8FFE-6326-472D-853B-5F96040EC911}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A9D8FFE-6326-472D-853B-5F96040EC911}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F5952833-AF85-4828-912D-FDB4335D1B46} = {1DD1144A-7085-4E59-ADAF-18E0D1D2D3B7}
+		{02359664-938F-41E8-B275-BBF365CBBC02} = {1DD1144A-7085-4E59-ADAF-18E0D1D2D3B7}
+		{0A9D8FFE-6326-472D-853B-5F96040EC911} = {1DD1144A-7085-4E59-ADAF-18E0D1D2D3B7}
 	EndGlobalSection
 EndGlobal
