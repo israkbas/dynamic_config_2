@@ -38,21 +38,7 @@ public class ConfigurationReader : IDisposable
             throw new KeyNotFoundException($"'{key}' anahtarına ait aktif bir konfigurasyon kaydı bulunamadı ({_applicationName}).");
         }
 
-        return ConvertValue<T>(record.Value);
-    }
-
-    private static T ConvertValue<T>(string rawValue)
-    {
-        var targetType = typeof(T);
-
-        if (targetType == typeof(bool))
-        {
-            var boolResult = rawValue == "1" || rawValue.Equals("true", StringComparison.OrdinalIgnoreCase);
-            return (T)(object)boolResult;
-        }
-
-        var converted = Convert.ChangeType(rawValue, targetType);
-        return (T)converted;
+        return ConfigValueConverter.Convert<T>(record.Value);
     }
 
     private async Task LoadConfigurationsAsync()
