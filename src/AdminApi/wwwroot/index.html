@@ -333,9 +333,15 @@
 
   loadRecords();
 
-  setTimeout(() => {
-    document.getElementById('introScreen').classList.add('hidden');
-  }, 5000);
+  const introScreen = document.getElementById('introScreen');
+  if (sessionStorage.getItem('introShown')) {
+    introScreen.classList.add('hidden');
+  } else {
+    sessionStorage.setItem('introShown', 'true');
+    setTimeout(() => {
+      introScreen.classList.add('hidden');
+    }, 2500);
+  }
 </script>
 
 </div>
