@@ -1,6 +1,6 @@
 # Dynamic Config
 
-Seçil Store backend case'i için hazırladığım proje. Amaç, appsettings.json / web.config gibi dosyalarda tutulan config değerlerini dışarı çıkarıp, uygulamayı yeniden başlatmadan (deploy/restart gerekmeden) güncellenebilir hale getirmek.
+Backend case'i için hazırladığım proje. Amaç, appsettings.json / web.config gibi dosyalarda tutulan config değerlerini dışarı çıkarıp, uygulamayı yeniden başlatmadan (deploy/restart gerekmeden) güncellenebilir hale getirmek.
 
 Config kayıtları MongoDB'de tutuluyor. `ConfigReader` adında bir class library yazdım, bu kütüphane arka planda belirli aralıklarla Mongo'yu kontrol edip kendi cache'ini güncelliyor. Her servis sadece kendi `ApplicationName`'ine ait ve `IsActive: true` olan kayıtları görebiliyor, başka servisin kaydına erişemiyor.
 
